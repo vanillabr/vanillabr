@@ -2,68 +2,160 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WoW Vanilla BR | O Retorno da Nostalgia</title>
+    <title>WoW Brasil VanillaBR - Servidor Privado Gratis</title>
     <style>
-        body {
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@900&display=swap');
+
+        body, html {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0a0a0a;
-            color: #e0e0e0;
-            text-align: center;
-        }
-        header {
-            padding: 50px 20px;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://wallpaperaccess.com/full/2222538.jpg'); /* Exemplo de fundo */
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            /* A IMAGEM DE FUNDO VAI AQUI NO BODY */
+            background-image: url('FUNDO.png');
             background-size: cover;
             background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Garante que a imagem n„o role */
+            background-color: #000; /* Cor de suporte caso a imagem demore */
         }
-        h1 { font-size: 3em; color: #ffd700; text-shadow: 2px 2px 4px #000; }
-        .container { max-width: 800px; margin: 40px auto; padding: 20px; }
+
+        /* Camada das PartÌculas (Canvas) */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Fica acima do body, mas abaixo do wrapper */
+            pointer-events: none; /* Fundamental para clicar nos botıes */
+        }
+
+        /* Camada de fogo/brilho */
+        .fire-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 90%, rgba(255, 60, 0, 0.4) 0%, transparent 70%);
+            animation: flicker 2s infinite alternate;
+            z-index: 2; /* Acima das partÌculas */
+            pointer-events: none;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.4; }
+            100% { opacity: 0.7; }
+        }
+
+        /* Wrapper do conte˙do (O mais alto) */
+        .wrapper {
+            position: relative;
+            z-index: 10; /* Garante que o menu fique visÌvel e clic·vel */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            color: #ffd700;
+        }
+
+        .logo { margin-bottom: 30px; }
+
+        .menu {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 30px;
+            border: 2px solid #8b4513;
+            border-radius: 50px;
+        }
+
         .btn {
-            display: inline-block;
-            padding: 15px 30px;
-            margin: 10px;
-            background: #b8860b;
-            color: white;
+            display: block;
+            margin: 15px 0;
+            padding: 15px 40px;
+            background: #331a00;
+            color: #ffd700;
             text-decoration: none;
+            font-family: 'Cinzel', serif;
             font-weight: bold;
-            border-radius: 5px;
+            border: 1px solid #ffd700;
             transition: 0.3s;
         }
-        .btn:hover { background: #daa520; transform: scale(1.05); }
-        .server-status {
-            background: #1a1a1a;
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #333;
+
+        .btn:hover {
+            background: #ffd700;
+            color: #000;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #ffd700;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>WoW Vanilla BR</h1>
-        <p>A experi√™ncia cl√°ssica como voc√™ sempre quis. Sem modifica√ß√µes, pura nostalgia.</p>
-    </header>
+    <!-- Canvas das partÌculas -->
+    <canvas id="particles"></canvas>
+    <!-- Overlay de fogo -->
+    <div class="fire-overlay"></div>
 
-    <div class="container">
-        <div class="server-status">
-            <h2>Status do Servidor</h2>
-            <p>Estado: <span style="color: #00ff00;">‚óè Online</span></p>
-            <p>Jogadores Online: <b>452</b></p>
+    <!-- Conte˙do principal -->
+    <div class="wrapper">
+        <div class="logo">
+          <p><img src="logo2.png" alt="WoW Logo" width="300" height="200"></p>
         </div>
-
-        <div style="margin-top: 30px;">
-            <a href="#" class="btn">Criar Conta</a>
-            <a href="#" class="btn">Baixar Cliente</a>
-            <a href="#" class="btn">Discord</a>
-        </div>
+        <div class="menu">
+            Servidor Wow Vanilla Classico ! <a href="https://www.topservergame.com/wow/download" class="btn">BAIXAR JOGO</a>
+            <a href="https://www.topservergame.com/wow/cadastro" class="btn">CRIAR CONTA</a>        </div>
     </div>
 
-    <footer style="margin-top: 50px; font-size: 0.8em; color: #666;">
-        <p>&copy; 2026 WoW Vanilla BR - Servidor n√£o oficial. Desenvolvido por f√£s.</p>
-    </footer>
+    <script>
+        // --- Script das PartÌculas ---
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
 
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        const particlesArray = [];
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height + canvas.height; // ComeÁa de baixo
+                this.size = Math.random() * 2 + 1;
+                this.speedY = Math.random() * 1 + 0.5; // Velocidade de subida
+                this.opacity = Math.random() * 0.5;
+            }
+            update() {
+                this.y -= this.speedY; // Move para cima
+                // Se sair da tela, reseta a posiÁ„o para baixo
+                if (this.y < 0) this.reset();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 200, 100, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Cria 120 partÌculas
+        for (let i = 0; i < 120; i++) particlesArray.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particlesArray.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
 </body>
 </html>
